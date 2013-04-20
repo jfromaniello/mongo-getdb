@@ -1,0 +1,26 @@
+{
+  "name": "mongo-getdb",
+  "version": "0.0.1",
+  "description": "A very opinionated way to connect with the mongodb driver.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jfromaniello/mongo-getdb.git"
+  },
+  "keywords": [
+    "mongodb",
+    "easy"
+  ],
+  "author": "José F. Romaniello <jfromaniello@gmail.com> (http://joseoncode.com)",
+  "license": "mit",
+  "devDependencies": {
+    "chai": "~1.5.0",
+    "mocha": "~1.9.0"
+  },
+  "dependencies": {
+    "mongodb": "~1.2.14"
+  }
+}
