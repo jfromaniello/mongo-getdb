@@ -4,7 +4,7 @@
   "description": "A very opinionated way to connect with the mongodb driver.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --timeout 60000"
   },
   "repository": {
     "type": "git",

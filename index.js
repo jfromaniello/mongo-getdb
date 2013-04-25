@@ -1,7 +1,17 @@
 var mongodb          = require("mongodb");
+var Server           = mongodb.Server;
+var ReplSetServers   = mongodb.ReplSetServers;
 var Db               = mongodb.Db;
 var cache            = {};
 var connectionLookup = require('./lib/connection-lookup');
+
+function createServer ( hostPort ) {
+  return new Server ( hostPort.host, hostPort.port, {
+    auto_reconnect: true,
+    socketOptions: { keepAlive: 300 },
+    poolSize: 10
+  });
+}
 
 function getOrCreate (alias) {
   alias = alias || 'default';
@@ -13,12 +23,20 @@ function getOrCreate (alias) {
   cache[alias] = {waiting: []};
 
   var connectionSettings = connectionLookup.get(alias);
+  
+  var mongoserver;
 
-  var mongoserver = new mongodb.Server(connectionSettings.host, connectionSettings.port, {
-    auto_reconnect: true,
-    socketOptions: { keepAlive: 300 },
-    poolSize: 10
-  });
+  if (connectionSettings.replicants) {
+    mongoserver = new ReplSetServers(connectionSettings.replicants.map(createServer), {
+      rs_name:       connectionSettings.rs_name,
+      socketOptions: {
+        keepAlive: 300
+      }
+    });
+  } else {
+    mongoserver = createServer(connectionSettings);
+  }
+
 
   var db = (cache[alias].db = new Db(connectionSettings.name, mongoserver, {safe:true}));
 

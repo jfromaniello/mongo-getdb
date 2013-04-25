@@ -78,6 +78,24 @@ getDb('mongodb://localhost/mydb', function (db) {
 });
 ~~~
 
+
+## Usage with replicasets
+
+~~~javascript
+var getDb = require('mongo-getdb');
+
+getDb.init({ url:  'mongodb://usr:password@[repl1=server1:27018,server2:27017]/mydb' });
+
+getDb(function (db) {
+	db.collection('products')
+	  .find({})
+	  .toArray(function(er, prods) {
+
+	  });
+});
+~~~
+
+
 ## License
 
 MIT - 2013 - José F. Romaniello
