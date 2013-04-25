@@ -13,14 +13,15 @@ function createServer ( hostPort ) {
   });
 }
 
-function getOrCreate (alias) {
+function get (alias, avoidCache) {
   alias = alias || 'default';
 
-  if (cache[alias]) {
-    return cache[alias].db;
+  if (!avoidCache){
+    if (cache[alias]) {
+      return cache[alias].db;
+    }
+    cache[alias] = {waiting: []};
   }
-
-  cache[alias] = {waiting: []};
 
   var connectionSettings = connectionLookup.get(alias);
   
@@ -38,7 +39,9 @@ function getOrCreate (alias) {
   }
 
 
-  var db = (cache[alias].db = new Db(connectionSettings.name, mongoserver, {safe:true}));
+  var db = new Db(connectionSettings.name, mongoserver, {safe:true});
+  
+  if (!avoidCache) cache[alias].db = db;
 
   return db;
 }
@@ -62,7 +65,7 @@ module.exports = function(alias, callback){
     alias = 'default';
   }
   
-  var db = getOrCreate(alias);
+  var db = get(alias);
 
   if(db.serverConfig.isConnected()){
 
@@ -75,33 +78,41 @@ module.exports = function(alias, callback){
 
   cache[alias].waiting.push(callback);
 
-  process.nextTick(function () {
-
-    if(!db.openCalled){
-      db.open(function(err, db){
-        if ( err ) {
-          console.error('error connecting to the db, exiting');
-          return process.exit(1);
-        }
-      
-        var connectionSettings = connectionLookup.get(alias);
-        if(connectionSettings.user && connectionSettings.password){
-          db.authenticate(connectionSettings.user, connectionSettings.password, function(err){
-            if(err){
-              console.error('authentication error connecting to mongodb, exiting');
-              return process.exit(2);
-            }
-            connected(alias);
-          });
-        }else{
+  if(!db.openCalled){
+    db.open(function(err, db){
+      if ( err ) {
+        console.error('error connecting to the db, exiting');
+        return process.exit(1);
+      }
+    
+      var connectionSettings = connectionLookup.get(alias);
+      if(connectionSettings.user && connectionSettings.password){
+        db.authenticate(connectionSettings.user, connectionSettings.password, function(err){
+          if(err){
+            console.error('authentication error connecting to mongodb, exiting');
+            return process.exit(2);
+          }
           connected(alias);
-        }
-      });
-    }
+        });
+      }else{
+        connected(alias);
+      }
+    });
+  }
+};
 
-  });
+//this is useful to use with other mongodb related tools such as connect-mongo
+module.exports.getDbAndCredentials = function (alias) {
+  alias = alias || 'default';
 
-  return db;
+  var db = get(alias, true);
+  var connectionSettings = connectionLookup.get(alias);
+  
+  return {
+    db: db,
+    username: connectionSettings.user,
+    password: connectionSettings.password
+  };
 };
 
 module.exports.init = function (options) {

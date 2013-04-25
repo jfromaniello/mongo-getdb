@@ -95,6 +95,22 @@ getDb(function (db) {
 });
 ~~~
 
+## connect-mongo
+
+Usage with [connect-mongodb](https://github.com/kcbanner/connect-mongo).
+
+~~~javascript
+var express     = require('express');
+var getDb       = require('mongo-getdb');
+var MongoStore  = require('connect-mongo')(express);
+
+var storeConfig = getDb.getDbAndCredentials();
+
+storeConfig.collection = 'sessions';
+
+var store = new MongoStore(storeConfig);
+~~~
+
 
 ## License
 
