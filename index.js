@@ -64,11 +64,7 @@ module.exports = function(alias, callback){
   
   var db = getOrCreate(alias);
 
-  if(!db.serverConfig.isConnected()){
-
-    cache[alias].waiting.push(callback);
-  
-  }else{
+  if(db.serverConfig.isConnected()){
 
     process.nextTick(function(){
       return callback(db);
@@ -77,29 +73,35 @@ module.exports = function(alias, callback){
     return db;
   }
 
-  if(!db.openCalled){
-    db.open(function(err, db){
-      if ( err ) {
-        console.error('error connecting to the db, exiting');
-        return process.exit(1);
-      }
-    
-      var connectionSettings = connectionLookup.get(alias);
-      if(connectionSettings.user && connectionSettings.password){
-        db.authenticate(connectionSettings.user, connectionSettings.password, function(err){
-          if(err){
-            console.error('authentication error connecting to mongodb, exiting');
-            return process.exit(2);
-          }
-          connected(alias);
-        });
-      }else{
-        connected(alias);
-      }
-    });
+  cache[alias].waiting.push(callback);
 
-    return db;
-  }
+  process.nextTick(function () {
+
+    if(!db.openCalled){
+      db.open(function(err, db){
+        if ( err ) {
+          console.error('error connecting to the db, exiting');
+          return process.exit(1);
+        }
+      
+        var connectionSettings = connectionLookup.get(alias);
+        if(connectionSettings.user && connectionSettings.password){
+          db.authenticate(connectionSettings.user, connectionSettings.password, function(err){
+            if(err){
+              console.error('authentication error connecting to mongodb, exiting');
+              return process.exit(2);
+            }
+            connected(alias);
+          });
+        }else{
+          connected(alias);
+        }
+      });
+    }
+
+  });
+
+  return db;
 };
 
 module.exports.init = function (options) {
