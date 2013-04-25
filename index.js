@@ -53,6 +53,10 @@ function connected(alias){
 }
 
 module.exports = function(alias, callback){
+  if (!alias) {
+    callback = function(){};
+    alias = 'default';
+  }
   if (typeof alias === 'function') {
     callback = alias;
     alias = 'default';
@@ -66,10 +70,11 @@ module.exports = function(alias, callback){
   
   }else{
 
-    return process.nextTick(function(){
+    process.nextTick(function(){
       return callback(db);
     });
 
+    return db;
   }
 
   if(!db.openCalled){
@@ -92,7 +97,8 @@ module.exports = function(alias, callback){
         connected(alias);
       }
     });
-    return;
+
+    return db;
   }
 };
 
