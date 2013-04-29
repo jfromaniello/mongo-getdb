@@ -52,7 +52,7 @@ function connected(alias){
   waiting.forEach(function(cb) { 
     cb(cache[alias].db); 
   });
-  delete cache[alias].waiting;
+  cache[alias].waiting = [];
 }
 
 module.exports = function(alias, callback){
