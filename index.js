@@ -67,15 +67,10 @@ module.exports = function(alias, callback){
   
   var db = get(alias);
       
-      //1.3.x introduced a change 
-      //and it fails if we haven't called 
-      //connect yet
-  if(db.serverConfig.connectionPool &&  db.serverConfig.isConnected()){
-
+  if(db.serverConfig.isConnected()){
     process.nextTick(function(){
       return callback(db);
     });
-
     return db;
   }
 
