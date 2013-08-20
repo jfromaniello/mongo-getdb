@@ -1,119 +1,43 @@
-var mongodb          = require("mongodb");
-var Server           = mongodb.Server;
-var ReplSetServers   = mongodb.ReplSetServers;
-var Db               = mongodb.Db;
-var cache            = {};
-var connectionLookup = require('./lib/connection-lookup');
+var MongoClient     = require("mongodb").MongoClient;
+var async           = require('async');
+var configs = {};
 
-function createServer ( hostPort ) {
-  return new Server ( hostPort.host, hostPort.port, {
-    auto_reconnect: true,
-    socketOptions: { keepAlive: 300 },
-    poolSize: 10
-  });
-}
-
-function get (alias, avoidCache) {
-  alias = alias || 'default';
-
-  if (!avoidCache){
-    if (cache[alias]) {
-      return cache[alias].db;
-    }
-    cache[alias] = {waiting: []};
+var MemoizedConnect = async.memoize(function (alias, callback) {
+  if (!(alias in configs)) {
+    throw new Error('unknown ' + alias + ' config');
   }
-
-  var connectionSettings = connectionLookup.get(alias);
-  
-  var mongoserver;
-
-  if (connectionSettings.replicants) {
-    mongoserver = new ReplSetServers(connectionSettings.replicants.map(createServer), {
-      rs_name:       connectionSettings.rs_name,
-      socketOptions: {
-        keepAlive: 300
-      }
-    });
-  } else {
-    mongoserver = createServer(connectionSettings);
-  }
+  MongoClient.connect.apply(MongoClient.connect, configs[alias].concat([callback]));
+}); 
 
 
-  var db = new Db(connectionSettings.name, mongoserver, {safe:true});
-  
-  if (!avoidCache) cache[alias].db = db;
-
-  return db;
-}
-
-
-function connected(alias){
-  var waiting = cache[alias].waiting;
-  waiting.forEach(function(cb) { 
-    cb(cache[alias].db); 
-  });
-  cache[alias].waiting = [];
-}
-
-module.exports = function(alias, callback){
-  if (!alias) {
-    callback = function(){};
-    alias = 'default';
-  }
+var getDb = module.exports = function(alias, callback) {
   if (typeof alias === 'function') {
     callback = alias;
     alias = 'default';
   }
-  
-  var db = get(alias);
-      
-  if(db.serverConfig.isConnected()){
-    process.nextTick(function(){
-      return callback(db);
-    });
-    return db;
-  }
-
-  cache[alias].waiting.push(callback);
-
-  if(!db.openCalled){
-    db.open(function(err, db){
-      if ( err ) {
-        console.error('error connecting to the db, exiting');
-        return process.exit(1);
-      }
-    
-      var connectionSettings = connectionLookup.get(alias);
-      if(connectionSettings.user && connectionSettings.password){
-        db.authenticate(connectionSettings.user, connectionSettings.password, function(err){
-          if(err){
-            console.error('authentication error connecting to mongodb, exiting');
-            return process.exit(2);
-          }
-          connected(alias);
-        });
-      }else{
-        connected(alias);
-      }
-    });
-  }
+  MemoizedConnect(alias, function (err, db) {
+    if (err) {
+      console.error('error connecting to the db, exiting');
+      return process.exit(1);
+    }
+    callback(db);
+  });
 };
 
-//this is useful to use with other mongodb related tools such as connect-mongo
-module.exports.getDbAndCredentials = function (alias) {
-  alias = alias || 'default';
+getDb.init = function () {
+  var args = [].slice.call(arguments, 0);
+  var alias = 'default';
 
-  var db = get(alias, true);
-  var connectionSettings = connectionLookup.get(alias);
-  
-  return {
-    db: db,
-    username: connectionSettings.user,
-    password: connectionSettings.password
-  };
-};
+  if (args.length === 0) {
+    alias = 'default';
+    args  = [process.env.DB];
+  } 
 
-module.exports.init = function (options) {
-  cache={};
-  connectionLookup.init(options.url);
+  if (typeof arguments[0] === 'string' && typeof arguments[1] === 'string'){
+    alias = args[0];
+    args = args.slice(1);
+  }
+
+  delete MemoizedConnect.memo[alias];
+  configs[alias] = args;
 };

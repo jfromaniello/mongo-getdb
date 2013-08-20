@@ -6,11 +6,20 @@ describe('getDb', function () {
     var db;
 
     before(function (done) {
-      getDb.init({url: 'mongodb://localhost/foo'});
+      getDb.init('mongodb://localhost/foo', {
+        server: {
+          poolSize: 10,
+          socketOptions: {
+            connectTimeoutMS: 500,
+            keepAlive: 300
+          }
+        }
+      });
+
       getDb(function (theDb) {
         db = theDb;
         done();
-      })
+      });
     });
 
     it('should return a connected db', function () {
@@ -46,8 +55,8 @@ describe('getDb', function () {
 
   describe('with env "DB"', function () {
     before(function () {
-      getDb.init({url:null});
       process.env.DB = 'mongodb://localhost/HAA';
+      getDb.init();
     });
     
     after(function () {
@@ -62,15 +71,4 @@ describe('getDb', function () {
       });
     });
   });
-
-  describe('with url as alias', function () {
-    it('should work', function (done) {
-      getDb('mongodb://localhost/foobar', function (db) {
-        expect(db.databaseName)
-          .to.equal('foobar');
-        done();
-      });
-    });
-  });
-
 });
