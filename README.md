@@ -35,8 +35,8 @@ This will "memoize" the result of MongoClient.connect, so you can use getDb anyw
 ~~~javascript
 var getDb = require('mongo-getdb');
 
-getDb.init({'db-one', 'mongodb://localhost/mydb');
-getDb.init({'db-two', 'mongodb://localhost/mydb2');
+getDb.init('db-one', 'mongodb://localhost/mydb');
+getDb.init('db-two', 'mongodb://localhost/mydb2');
 
 getDb('db-one', function (db) {
 	db.collection('products')
