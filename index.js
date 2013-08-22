@@ -11,6 +11,11 @@ var MemoizedConnect = async.memoize(function (alias, callback) {
 
 
 var getDb = module.exports = function(alias, callback) {
+  //directly using a connection string as alias.
+  if ( !(alias in configs) && typeof alias == 'string' && alias.indexOf('mongodb://') === 0 ) {
+    configs[alias] = [alias];
+  }
+
   if (typeof alias === 'function') {
     callback = alias;
     alias = 'default';

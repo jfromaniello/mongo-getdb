@@ -71,4 +71,19 @@ describe('getDb', function () {
       });
     });
   });
+
+  describe('without init', function () {
+    
+    after(function () {
+      delete process.env.DB;
+    });
+
+    it('should work', function (done) {
+      getDb('mongodb://localhost/HAA123', function (db) {
+        expect(db.databaseName)
+          .to.equal('HAA123');
+        done();
+      });
+    });
+  });
 });
