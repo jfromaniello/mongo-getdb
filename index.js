@@ -7,7 +7,7 @@ var MemoizedConnect = async.memoize(function (alias, callback) {
     throw new Error('unknown ' + alias + ' config');
   }
   MongoClient.connect.apply(MongoClient.connect, configs[alias].concat([callback]));
-}); 
+});
 
 
 var getDb = module.exports = function(alias, callback) {
@@ -36,7 +36,7 @@ getDb.init = function () {
   if (args.length === 0) {
     alias = 'default';
     args  = [process.env.DB];
-  } 
+  }
 
   if (typeof arguments[0] === 'string' && typeof arguments[1] === 'string'){
     alias = args[0];
@@ -46,3 +46,5 @@ getDb.init = function () {
   delete MemoizedConnect.memo[alias];
   configs[alias] = args;
 };
+
+getDb.hapi = require('./hapi')(getDb);
