@@ -53,12 +53,31 @@ describe('getDb', function () {
     });
   });
 
+  describe('error in callback', function () {
+    it('should return the error object', function (done) {
+      getDb('mongodb://127.0.0.1:9287', function (err, db) {
+        expect(err.message).to.equal('failed to connect to [127.0.0.1:9287]');
+        expect(db).to.be.undefined;
+        done();
+      });
+    });
+
+    it('should return the db in the second parameter', function (done) {
+      getDb('mongodb://127.0.0.1:27017', function (err, db) {
+        expect(err).to.null;
+        expect(db).to.be.ok;
+        done();
+      });
+    });
+
+  });
+
   describe('with env "DB"', function () {
     before(function () {
       process.env.DB = 'mongodb://localhost/HAA';
       getDb.init();
     });
-    
+
     after(function () {
       delete process.env.DB;
     });
@@ -73,7 +92,7 @@ describe('getDb', function () {
   });
 
   describe('without init', function () {
-    
+
     after(function () {
       delete process.env.DB;
     });
