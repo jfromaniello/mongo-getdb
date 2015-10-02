@@ -31,18 +31,12 @@ describe('getDb', function () {
     });
 
     it('should have auto_reconnect', function () {
-      expect(db.serverConfig.options.auto_reconnect)
+      expect(db.serverConfig.autoReconnect)
         .to.be.true;
     });
 
-    it('should have the socket keepAlive', function () {
-      expect(db.serverConfig.options.socketOptions.keepAlive)
-        .to.equal(300);
-    });
-
     it('should have poolSize 10', function () {
-      expect(db.serverConfig.options.poolSize)
-        .to.equal(10);
+      expect(db.serverConfig.poolSize).to.equal(10);
     });
 
     it('shuld return always same instance', function (done) {
@@ -56,7 +50,7 @@ describe('getDb', function () {
   describe('error in callback', function () {
     it('should return the error object', function (done) {
       getDb('mongodb://127.0.0.1:9287', function (err, db) {
-        expect(err.message).to.equal('failed to connect to [127.0.0.1:9287]');
+        expect(err.message).to.equal('connect ECONNREFUSED');
         expect(db).to.be.undefined;
         done();
       });
