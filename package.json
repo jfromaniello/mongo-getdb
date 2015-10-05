@@ -21,7 +21,7 @@
     "mocha": "~1.9.0"
   },
   "dependencies": {
-    "mongodb": "~1.4.5",
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "mongodb": "^2.0.45"
   }
 }
