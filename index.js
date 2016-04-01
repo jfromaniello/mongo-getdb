@@ -21,8 +21,6 @@ var getDb = module.exports = function(alias, callback) {
     alias = 'default';
   }
 
-  MemoizedConnect(alias, done);
-
   function done (err, db) {
     // If provided with first err parameter
     // let the user handle the error itself
@@ -38,6 +36,8 @@ var getDb = module.exports = function(alias, callback) {
     console.error('error connecting to the db, exiting');
     return process.exit(1);
   };
+  
+  MemoizedConnect(alias, done);
 };
 
 getDb.init = function () {
