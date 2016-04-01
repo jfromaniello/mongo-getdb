@@ -21,25 +21,23 @@ var getDb = module.exports = function(alias, callback) {
     alias = 'default';
   }
 
-  var done = function (err, db) {
-    if (callback.length === 1) {
-      if (err) {
-        console.error('error connecting to the db, exiting');
-        return process.exit(1);
-      } else {
-        return callback(db);
-      }
-    } else {
-      callback(err, db);
-    }
-  };
+  MemoizedConnect(alias, done);
 
-  MemoizedConnect(alias, function (err, db) {
-    if (err) {
-      return done(err);
+  function done (err, db) {
+    // If provided with first err parameter
+    // let the user handle the error itself
+    if (callback.length > 1) {
+      return callback(err, db);
     }
-    done(null, db);
-  });
+
+    // handle error ourselves
+    if (!err) {
+      return callback(db);
+    }
+    
+    console.error('error connecting to the db, exiting');
+    return process.exit(1);
+  };
 };
 
 getDb.init = function () {
