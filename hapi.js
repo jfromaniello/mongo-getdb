@@ -2,6 +2,8 @@ module.exports = function (getDb) {
   var hapi_plugin = {};
 
   hapi_plugin.register = function (plugin, options, next) {
+    plugin.expose('getDb', getDb);
+    
     getDb(function (db) {
       plugin.expose('db', db);
       next();
