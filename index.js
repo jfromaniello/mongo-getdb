@@ -24,7 +24,7 @@ var getDb = module.exports = function(alias, callback) {
   var done = function (err, db) {
     if (callback.length === 1) {
       if (err) {
-        console.error('error connecting to the db, exiting');
+        console.error('Error connecting to the db, exiting: \n', err);
         return process.exit(1);
       } else {
         return callback(db);
