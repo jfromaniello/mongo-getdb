@@ -2,6 +2,12 @@
 
 An opinionated way to connect with the mongodb driver.
 
+Versions:
+| mongo-getdb  | mongodb |
+| ------------- | ------------- |
+| `mongo-getdb@^4`  | `mongodb@^3`  |
+| `mongo-getdb@^3`  | `mongodb@^2`  |
+
 ## Installation
 
 	npm install mongo-getdb
