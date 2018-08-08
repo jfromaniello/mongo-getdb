@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jfromaniello/mongo-getdb.svg?branch=master)](https://travis-ci.org/jfromaniello/mongo-getdb)
+
 An opinionated way to connect with the mongodb driver.
 
 ## Installation
