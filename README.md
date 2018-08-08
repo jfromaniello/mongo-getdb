@@ -3,6 +3,7 @@
 An opinionated way to connect with the mongodb driver.
 
 Versions:
+
 | mongo-getdb  | mongodb |
 | ------------- | ------------- |
 | `mongo-getdb@^4`  | `mongodb@^3`  |
