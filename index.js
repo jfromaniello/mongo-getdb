@@ -21,7 +21,14 @@ var getDb = module.exports = function(alias, callback) {
     alias = 'default';
   }
 
-  var done = function (err, db) {
+  var done = function (err, client) {
+    var db;
+    if(client && client.constructor == MongoClient) {
+      db = client.db(client.s.options.dbName);
+      db.client = client;
+    } else {
+      db = client;
+    }
     if (callback.length === 1) {
       if (err) {
         console.error('error connecting to the db, exiting');
