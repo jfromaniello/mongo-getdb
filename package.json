@@ -1,6 +1,6 @@
 {
   "name": "mongo-getdb",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "A very opinionated way to connect with the mongodb driver.",
   "main": "index.js",
   "scripts": {
