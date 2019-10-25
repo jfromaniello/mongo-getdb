@@ -99,4 +99,19 @@ describe('getDb', function () {
       });
     });
   });
+
+  describe('with SRV URL init', function () {
+
+    after(function () {
+      delete process.env.DB;
+    });
+
+    it('should work', function (done) {
+      getDb('mongodb+srv://dev:dev@mongo:27017/db?authSource=admin', function (db) {
+        expect(db.databaseName)
+          .to.equal('db');
+        done();
+      });
+    });
+  });
 });

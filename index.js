@@ -9,10 +9,11 @@ var MemoizedConnect = async.memoize(function (alias, callback) {
   MongoClient.connect.apply(MongoClient.connect, configs[alias].concat([callback]));
 });
 
-
 var getDb = module.exports = function(alias, callback) {
   //directly using a connection string as alias.
-  if ( !(alias in configs) && typeof alias == 'string' && alias.indexOf('mongodb://') === 0 ) {
+  var isMongoUrl = alias.indexOf('mongodb://') === 0 || alias.indexOf('mongodb+srv://') === 0
+
+  if ( !(alias in configs) && typeof alias == 'string' && isMongoUrl ) {
     configs[alias] = [alias];
   }
 
