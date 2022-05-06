@@ -1,17 +1,17 @@
-var MongoClient     = require("mongodb").MongoClient;
-var async           = require('async');
-var configs = {};
+const MongoClient     = require("mongodb").MongoClient;
+const async           = require('async');
+const configs = {};
 
-var MemoizedConnect = async.memoize(function (alias, callback) {
+const MemoizedConnect = async.memoize(function (alias, callback) {
   if (!(alias in configs)) {
     throw new Error('unknown ' + alias + ' config');
   }
   MongoClient.connect.apply(MongoClient.connect, configs[alias].concat([callback]));
 });
 
-var isMongoUrl = (str) => str.indexOf('mongodb://') === 0 || str.indexOf('mongodb+srv://') === 0;
+const isMongoUrl = (str) => str.indexOf('mongodb://') === 0 || str.indexOf('mongodb+srv://') === 0;
 
-var getDb = module.exports = function(alias, callback) {
+const getDb = module.exports = function(alias, callback) {
   if ( !(alias in configs) && typeof alias == 'string' && isMongoUrl(alias) ) {
     //directly using a connection string as alias.
     configs[alias] = [alias];
@@ -22,8 +22,8 @@ var getDb = module.exports = function(alias, callback) {
     alias = 'default';
   }
 
-  var done = function (err, client) {
-    var db;
+  const done = function (err, client) {
+    let db;
     if(client && client.constructor == MongoClient) {
       db = client.db(client.s.options.dbName);
       db.client = client;

@@ -4,4 +4,4 @@ node_js:
 install:
   - npm i
 script:
-  - ./docker/test.sh
+  - npm run test:ci

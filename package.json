@@ -4,8 +4,8 @@
   "description": "A very opinionated way to connect with the mongodb driver.",
   "main": "index.js",
   "scripts": {
-    "test": "./docker/test.sh",
-    "docker:test": "mocha -R spec --exit --timeout 60000"
+    "test:ci": "./docker/test.sh",
+    "test": "mocha -R spec --exit --timeout 60000"
   },
   "repository": {
     "type": "git",
@@ -28,11 +28,5 @@
   },
   "dependencies": {
     "async": "^2.6.1"
-  },
-  "config": {
-    "mongodbMemoryServer": {
-      "version": "4.4.14",
-      "debug": "0"
-    }
   }
 }
