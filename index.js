@@ -68,4 +68,4 @@ getDb.init = function () {
   configs[alias] = args;
 };
 
-getDb.hapi = require('./hapi')(getDb);
+getDb.legacyHapi = require('./legacy-hapi')(getDb);
