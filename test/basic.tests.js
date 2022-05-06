@@ -1,12 +1,25 @@
-var getDb  = require('./..');
-var expect = require('chai').expect;
+const getDb  = require('./..');
+const expect = require('chai').expect;
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
-describe('getDb', function () {
+describe('getDb - single instance', function () {
+
+  let mongod, uri;
+
+  before(async () => {
+    mongod = await MongoMemoryServer.create();
+    uri = mongod.getUri();
+  });
+
+  after(async () => {
+    await mongod.stop();
+  })
+
   describe('with basic init', function () {
-    var db;
+    let db;
 
     before(function (done) {
-      getDb.init('mongodb://dev:dev@mongo:27017/admin', {
+      getDb.init(uri, {
         server: {
           poolSize: 10,
           socketOptions: {
@@ -27,7 +40,7 @@ describe('getDb', function () {
         .to.be.true;
 
       expect(db.databaseName)
-        .to.equal('admin');
+        .to.equal('test');
     });
 
     it('should have auto_reconnect', function () {
@@ -57,7 +70,7 @@ describe('getDb', function () {
     });
 
     it('should return the db in the second parameter', function (done) {
-      getDb('mongodb://dev:dev@mongo:27017/db?authSource=admin', function (err, db) {
+      getDb(uri, function (err, db) {
         expect(err).to.null;
         expect(db).to.be.ok;
         done();
@@ -68,7 +81,7 @@ describe('getDb', function () {
 
   describe('with env "DB"', function () {
     before(function () {
-      process.env.DB = 'mongodb://dev:dev@mongo:27017/db?authSource=admin';
+      process.env.DB = uri;
       getDb.init();
     });
 
@@ -79,7 +92,7 @@ describe('getDb', function () {
     it('should work', function (done) {
       getDb(function (db) {
         expect(db.databaseName)
-          .to.equal('db');
+          .to.equal('test');
         done();
       });
     });
@@ -92,24 +105,9 @@ describe('getDb', function () {
     });
 
     it('should work', function (done) {
-      getDb('mongodb://dev:dev@mongo:27017/db?authSource=admin', function (db) {
+      getDb(uri, function (db) {
         expect(db.databaseName)
-          .to.equal('db');
-        done();
-      });
-    });
-  });
-
-  describe('with SRV URL init', function () {
-
-    after(function () {
-      delete process.env.DB;
-    });
-
-    it('should work', function (done) {
-      getDb('mongodb+srv://dev:dev@mongo:27017/db?authSource=admin', function (db) {
-        expect(db.databaseName)
-          .to.equal('db');
+          .to.equal('test');
         done();
       });
     });
