@@ -26,7 +26,7 @@ const behavesLikeGetDB = () => {
       it("should return a connected db", function () {
         expect(db).to.not.be.undefined;
 
-        expect(db.databaseName).to.equal("test");
+        expect(db.databaseName).to.equal("getdb-test");
       });
 
       it("shuld return always same client instance", function (done) {
@@ -73,7 +73,7 @@ const behavesLikeGetDB = () => {
 
       it("should work", function (done) {
         getDb(function (db) {
-          expect(db.databaseName).to.equal("test");
+          expect(db.databaseName).to.equal("getdb-test");
           done();
         });
       });
@@ -86,7 +86,7 @@ const behavesLikeGetDB = () => {
 
       it("should work", function (done) {
         getDb(uri, function (db) {
-          expect(db.databaseName).to.equal("test");
+          expect(db.databaseName).to.equal("getdb-test");
           done();
         });
       });
@@ -100,7 +100,7 @@ describe('getDb', function () {
 
     before(async () => {
       mongod = await MongoMemoryServer.create();
-      uri = mongod.getUri();
+      uri = mongod.getUri("getdb-test");
     });
 
     after(async () => {
@@ -116,7 +116,7 @@ describe('getDb', function () {
     before(async () => {
       replset = await MongoMemoryReplSet.create({ replSet: { count: 4 } }); // This will create an ReplSet with 4 members
 
-      uri = replset.getUri();
+      uri = replset.getUri("getdb-test");
     });
 
     after(async () => {

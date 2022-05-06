@@ -25,7 +25,7 @@ const getDb = module.exports = function(alias, callback) {
   const done = function (err, client) {
     let db;
     if(client && client.constructor == MongoClient) {
-      db = client.db(client.s.options.dbName);
+      db = client.db();
       db.client = client;
     } else {
       db = client;
