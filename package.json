@@ -23,7 +23,7 @@
     "mongodb-memory-server": "^8.5.2"
   },
   "peerDependencies": {
-    "mongodb": "^4.5.0"
+    "mongodb": "^3.7.3 || ^4.5.0"
   },
   "dependencies": {
     "async": "^3.2.3"
