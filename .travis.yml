@@ -1,9 +1,7 @@
 language: node_js
 node_js:
-  - 4
-  - 6
-  - 8
+  - 16
 install:
   - npm i
 script:
-  - ./docker/test.sh
+  - npm run test:ci

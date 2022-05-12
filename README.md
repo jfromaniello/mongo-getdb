@@ -6,6 +6,7 @@ Versions:
 
 | mongo-getdb  | mongodb |
 | ------------- | ------------- |
+| `mongo-getdb@^5`  | `mongodb@^4`  |
 | `mongo-getdb@^4`  | `mongodb@^3`  |
 | `mongo-getdb@^3`  | `mongodb@^2`  |
 

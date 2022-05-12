@@ -3,20 +3,7 @@ version: '2'
 services:
 
   test:
-    image: node:6.14.3
+    image: node:16
     working_dir: /app
-    links:
-      - mongo
-    depends_on:
-      - mongo
     volumes:
       - ./:/app
-
-  mongo:
-    image: mongo:3.6
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: dev
-      MONGO_INITDB_ROOT_PASSWORD: dev
-      MONGO_INITDB_DATABASE: db

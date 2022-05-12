@@ -4,8 +4,8 @@
   "description": "A very opinionated way to connect with the mongodb driver.",
   "main": "index.js",
   "scripts": {
-    "test": "./docker/test.sh",
-    "docker:test": "mocha -R spec --exit"
+    "test:ci": "./docker/test.sh",
+    "test": "mocha -R spec --exit --timeout 60000"
   },
   "repository": {
     "type": "git",
@@ -18,14 +18,14 @@
   "author": "José F. Romaniello <jfromaniello@gmail.com> (http://joseoncode.com)",
   "license": "MIT",
   "devDependencies": {
-    "chai": "^4.1.2",
-    "mocha": "^5.2.0",
-    "mongodb": "^3.1.1"
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0",
+    "mongodb-memory-server": "^8.5.2"
   },
   "peerDependencies": {
-    "mongodb": "^3.1.1"
+    "mongodb": "^3.7.3 || ^4.5.0"
   },
   "dependencies": {
-    "async": "^2.6.1"
+    "async": "^3.2.3"
   }
 }
