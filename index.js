@@ -6,7 +6,7 @@ const MemoizedConnect = async.memoize(function (alias, callback) {
   if (!(alias in configs)) {
     throw new Error('unknown ' + alias + ' config');
   }
-  MongoClient.connect.apply(MongoClient.connect, configs[alias].concat([callback]));
+  MongoClient.connect.apply(MongoClient, configs[alias].concat([callback]));
 });
 
 const isMongoUrl = (str) => str.indexOf('mongodb://') === 0 || str.indexOf('mongodb+srv://') === 0;
