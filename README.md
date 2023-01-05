@@ -57,6 +57,24 @@ getDb('db-one', function (db) {
 });
 ~~~
 
+that works too:
+~~~javascript
+var getDb = require('mongo-getdb');
+
+// inits the default db, the one you get if you don't request a particular alias
+getDb.init('mongodb://localhost/mydb');
+// inits an alternative that you must explicitly request for, with an alias
+getDb.init('alt', 'mongodb://localhost/altdb');
+
+getDb('alt', function (db) {
+	/* gets the alternative db */
+});
+
+getDb('alt', function (db) {
+	/* gets the default DB */
+});
+~~~
+
 ## License
 
 MIT - 2013 - José F. Romaniello
