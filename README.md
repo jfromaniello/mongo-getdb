@@ -4,11 +4,12 @@ An opinionated way to connect with the mongodb driver.
 
 Versions:
 
-| mongo-getdb  | mongodb |
-| ------------- | ------------- |
-| `mongo-getdb@^5`  | `mongodb@^4`  |
-| `mongo-getdb@^4`  | `mongodb@^3`  |
-| `mongo-getdb@^3`  | `mongodb@^2`  |
+| mongo-getdb      | mongodb                                      |
+|------------------|----------------------------------------------|
+| `mongo-getdb@^6` | `mongodb@^4` or `mongodb@^5` or `mongodb@^6` |
+| `mongo-getdb@^5` | `mongodb@^4`                                 |
+| `mongo-getdb@^4` | `mongodb@^3`                                 |
+| `mongo-getdb@^3` | `mongodb@^2`                                 |
 
 ## Installation
 

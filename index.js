@@ -1,12 +1,14 @@
 const MongoClient     = require("mongodb").MongoClient;
 const async           = require('async');
+const util            = require('util');
 const configs = {};
+const connectCb = util.callbackify(MongoClient.connect);
 
 const MemoizedConnect = async.memoize(function (alias, callback) {
   if (!(alias in configs)) {
     throw new Error('unknown ' + alias + ' config');
   }
-  MongoClient.connect.apply(MongoClient, configs[alias].concat([callback]));
+  connectCb.apply(MongoClient, configs[alias].concat([callback]));
 });
 
 const isMongoUrl = (str) => str.indexOf('mongodb://') === 0 || str.indexOf('mongodb+srv://') === 0;
