@@ -24,6 +24,21 @@ const getDb = module.exports = function(alias, callback) {
     alias = 'default';
   }
 
+  // If no callback is provided, return a Promise
+  if (!callback) {
+    return new Promise((resolve, reject) => {
+      // Ensure alias is set to default if undefined
+      const targetAlias = alias || 'default';
+      getDb(targetAlias, (err, db) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(db);
+        }
+      });
+    });
+  }
+
   const done = function (err, client) {
     let db;
     if(client && client.constructor == MongoClient) {

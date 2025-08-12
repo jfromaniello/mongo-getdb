@@ -15,8 +15,6 @@ Versions:
 
 	npm install mongo-getdb
 
-
-
 ## Usage
 
 ~~~javascript
@@ -56,6 +54,31 @@ getDb('db-one', function (db) {
 
 	  });
 });
+~~~
+
+### Async/Promise version
+
+~~~javascript
+var getDb = require('mongo-getdb');
+
+getDb.init('db-one', 'mongodb://localhost/mydb');
+getDb.init('db-two', 'mongodb://localhost/mydb2');
+
+async function getDataFromBothDbs() {
+  try {
+    const db1 = await getDb('db-one');
+    const db2 = await getDb('db-two');
+
+    const [products, users] = await Promise.all([
+      db1.collection('products').find({}).toArray(),
+      db2.collection('users').find({}).toArray()
+    ]);
+
+    return { products, users };
+  } catch (error) {
+    console.error('Database error:', error);
+  }
+}
 ~~~
 
 ## License
