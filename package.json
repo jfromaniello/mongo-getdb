@@ -3,6 +3,7 @@
   "version": "6.1.0",
   "description": "A very opinionated way to connect with the mongodb driver.",
   "main": "index.js",
+  "types": "types/index.d.ts",
   "scripts": {
     "test:ci": "./docker/test.sh",
     "test": "mocha -R spec --exit --timeout 60000"
